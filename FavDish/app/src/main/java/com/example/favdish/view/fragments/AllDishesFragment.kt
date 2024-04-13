@@ -12,18 +12,22 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.favdish.R
-import com.example.favdish.databinding.FragmentHomeBinding
+import com.example.favdish.databinding.FragmentAllDishesBinding
 import com.example.favdish.view.activities.AddUpdateDishActivity
 import com.example.favdish.viewmodel.HomeViewModel
 
 class AllDishesFragment : Fragment() {
 
-    private var _binding: FragmentHomeBinding? = null
+    private var _binding: FragmentAllDishesBinding? = null
 
     // This property is only valid between onCreateView and
     // onDestroyView.
     private val binding get() = _binding!!
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true);
+    }
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -32,7 +36,7 @@ class AllDishesFragment : Fragment() {
         val homeViewModel =
             ViewModelProvider(this).get(HomeViewModel::class.java)
 
-        _binding = FragmentHomeBinding.inflate(inflater, container, false)
+        _binding = FragmentAllDishesBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
         val textView: TextView = binding.textHome
