@@ -9,9 +9,11 @@ import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import com.example.favdish.R
 import com.example.favdish.databinding.ActivityAddUpdateDishBinding
 import com.example.favdish.databinding.DialogCustomImageSelectionBinding
@@ -84,6 +86,7 @@ class AddUpdateDishActivity : AppCompatActivity(), View.OnClickListener {
                     showRationaleDialogForPermissions()
                 }
             }).onSameThread().check()
+            dialog.dismiss()
         }
 
         binding.tvGallery.setOnClickListener {
@@ -92,7 +95,10 @@ class AddUpdateDishActivity : AppCompatActivity(), View.OnClickListener {
                     Manifest.permission.READ_EXTERNAL_STORAGE,
                 ).withListener(object : PermissionListener{
                     override fun onPermissionGranted(p0: PermissionGrantedResponse?) {
-                        Toast.makeText(this@AddUpdateDishActivity, "You have the Gallery permission now to select image", Toast.LENGTH_SHORT).show()
+                        val galleryIntent = Intent(Intent.ACTION_PICK,
+                            MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+                        )
+                        startActivityForResult(galleryIntent, GALLERY)
                     }
 
                     override fun onPermissionDenied(p0: PermissionDeniedResponse?) {
@@ -110,7 +116,6 @@ class AddUpdateDishActivity : AppCompatActivity(), View.OnClickListener {
         }
         dialog.show()
     }
-
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if(resultCode == Activity.RESULT_OK){
@@ -118,9 +123,18 @@ class AddUpdateDishActivity : AppCompatActivity(), View.OnClickListener {
                 data?.extras?.let {
                     val thumbnail: Bitmap = data.extras!!.get("data") as Bitmap
                     mBinding.ivDishImage.setImageBitmap(thumbnail)
+                    mBinding.ivAddDishImage.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_vector_edit))
                 }
-
             }
+            if(requestCode == GALLERY){
+                data?.extras?.let {
+                    val selectedPhotoUri = data.data
+                    mBinding.ivDishImage.setImageURI(selectedPhotoUri)
+                    mBinding.ivAddDishImage.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_vector_edit))
+                }
+            }
+        } else if(resultCode == Activity.RESULT_CANCELED){
+            Log.e("cancelled", "User cancelled image selection")
         }
     }
     private fun showRationaleDialogForPermissions() {
@@ -144,5 +158,6 @@ class AddUpdateDishActivity : AppCompatActivity(), View.OnClickListener {
     }
     companion object{
         private const val CAMERA = 1
+        private const val GALLERY = 2
     }
 }
