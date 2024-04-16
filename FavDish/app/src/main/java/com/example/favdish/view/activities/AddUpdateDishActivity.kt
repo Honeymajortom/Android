@@ -102,20 +102,26 @@ class AddUpdateDishActivity : AppCompatActivity(), View.OnClickListener {
                     }
 
                     override fun onPermissionDenied(p0: PermissionDeniedResponse?) {
-                        TODO("Not yet implemented")
+                        Toast.makeText(
+                            this@AddUpdateDishActivity,
+                            "You have denied the storage permission to select image.",
+                            Toast.LENGTH_SHORT
+                        ).show()
                     }
 
                     override fun onPermissionRationaleShouldBeShown(
                         p0: PermissionRequest?,
                         p1: PermissionToken?
                     ) {
-                        TODO("Not yet implemented")
+                        showRationaleDialogForPermissions()
                     }
-                })
+                }).onSameThread().check()
+                dialog.dismiss()
             }
         }
         dialog.show()
     }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if(resultCode == Activity.RESULT_OK){
@@ -123,14 +129,15 @@ class AddUpdateDishActivity : AppCompatActivity(), View.OnClickListener {
                 data?.extras?.let {
                     val thumbnail: Bitmap = data.extras!!.get("data") as Bitmap
                     mBinding.ivDishImage.setImageBitmap(thumbnail)
-                    mBinding.ivAddDishImage.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_vector_edit))
+                    mBinding.ivAddDishImage.setImageDrawable(ContextCompat.getDrawable(this@AddUpdateDishActivity, R.drawable.ic_vector_edit))
                 }
             }
+
             if(requestCode == GALLERY){
-                data?.extras?.let {
+                data?.let {
                     val selectedPhotoUri = data.data
                     mBinding.ivDishImage.setImageURI(selectedPhotoUri)
-                    mBinding.ivAddDishImage.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_vector_edit))
+                    mBinding.ivAddDishImage.setImageDrawable(ContextCompat.getDrawable(this@AddUpdateDishActivity, R.drawable.ic_vector_edit))
                 }
             }
         } else if(resultCode == Activity.RESULT_CANCELED){
