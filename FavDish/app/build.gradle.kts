@@ -42,7 +42,7 @@ dependencies {
 
     implementation ("com.intuit.sdp:sdp-android:1.0.6")
     implementation ("com.karumi:dexter:6.2.2")
-
+    implementation ("com.github.bumptech.glide:glide:4.16.0")
     implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("com.google.android.material:material:1.11.0")
